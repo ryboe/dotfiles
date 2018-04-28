@@ -1,0 +1,28 @@
+[core]
+	editor = subl -w
+	excludesfile = ~/.config/git/ignore
+	whitespace = blank-at-eof,blank-at-eol,space-before-tab,trailing-space
+
+[alias]
+	branch-author = for-each-ref --format='$(committerdate) %09 $(authorname) %09 $(refname)'
+	fetchall = fetch --all --prune --tags
+	pushf = push --force-with-lease
+
+[branch]
+	autosetuprebase = always
+
+[merged]
+	ff = only
+
+[push]
+	showUntrackedFiles = all
+
+[transfer]
+	fsckobjects = true
+
+[user]
+	name = Ryan Boehning
+	email = ryanboehning@gmail.com
+
+[web]
+	browser = chrome
