@@ -5,11 +5,19 @@
 
 [alias]
 	branch-author = for-each-ref --format='$(committerdate) %09 $(authorname) %09 $(refname)'
+	co = checkout
 	fetchall = fetch --all --prune --tags
+	prom = pull --rebase origin master
 	pushf = push --force-with-lease
 
 [branch]
 	autosetuprebase = always
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
 
 [merged]
 	ff = only
@@ -25,4 +33,4 @@
 	email = ryanboehning@gmail.com
 
 [web]
-	browser = chrome
+	browser = firefox

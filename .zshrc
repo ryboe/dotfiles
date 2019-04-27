@@ -1,5 +1,3 @@
-#!/usr/local/bin/zsh
-
 # ZSH OPTIONS
 setopt extended_glob
 setopt prompt_subst
@@ -8,55 +6,67 @@ setopt prompt_subst
 bindkey -v
 
 # ENV VARS
-export EDITOR="nvim"
-export FPATH="${HOME}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/zsh/site-functions:${FPATH}"
-export FZF_DEFAULT_OPTS='
-  --color=bg+:#073642,bg:#002b36,spinner:#719e07,hl:#586e75
-  --color=fg:#839496,header:#586e75,info:#cb4b16,pointer:#719e07
-  --color=marker:#719e07,fg+:#839496,prompt:#719e07,hl+:#719e07
-'
-export FZF_ALT_C_COMMAND="mdfind 'kind:folder'"
-export FZF_CTRL_T_COMMAND="rg --files ${HOME} /etc /usr"
-export HISTFILE="${HOME}/.histfile"
-export HISTSIZE=1000
-export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:/usr/local/opt/findutils/libexec/gnuman:${MANPATH}"
-export PATH="${HOME}/go/bin:${HOME}/.cargo/bin:/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
+export FZF_ALT_C_COMMAND="fd --type directory --hidden '.' ${HOME} /etc /usr /tmp /var /Applications"
+export FZF_CTRL_T_COMMAND="fd --type file --hidden --exclude .git '.' ${HOME} /etc /usr /tmp /var /Applications /sbin"
 export PROMPT='%F{cyan}%B%40<..<%3~%b%f$(gitprompt) '
 export RPROMPT="%?"
-export SAVEHIST=1000
-export VISUAL="${EDITOR}"
+export RUSTFLAGS='--codegen target-cpu=native'
+export PATH="$HOME/bin:$HOME/.cargo/bin:$HOME/Library/Python/3.7/bin:$PATH"
+export GOBIN="$HOME/bin"
 
 # ALIASES
-alias ls="ls --color=auto --group-directories-first"
+alias ls="exa --color=auto --group-directories-first"
 
 # SOURCES
 source "/usr/local/opt/fzf/shell/completion.zsh"
 source "/usr/local/opt/fzf/shell/key-bindings.zsh"
 
 # FUNCTIONS
-cdl() {
-	cd "$1" || exit
-	ls
-}
-
 qq() {
-	clear
-	"${HOME}/go/src/github.com/y0ssar1an/q/q.sh"
+    clear
+
+    logpath="$TMPDIR/q"
+    if [[ -z "$TMPDIR" ]]; then
+        logpath="/tmp/q"
+    fi
+
+    if [[ ! -f "$logpath" ]]; then
+        echo 'Q LOG' > "$logpath"
+    fi
+
+    tail -100f -- "$logpath"
 }
 
 rmqq() {
-	if [[ -f "${TMPDIR}/q" ]]; then
-		rm "${TMPDIR}/q"
-	fi
-	qq
+    logpath="$TMPDIR/q"
+    if [[ -z "$TMPDIR" ]]; then
+        logpath="/tmp/q"
+    fi
+    if [[ -f "$logpath" ]]; then
+        rm "$logpath"
+    fi
+    qq
 }
 
 zle-keymap-select zle-line-init() {
-	if [[ "${KEYMAP}" == "vicmd" ]]; then
-		echo -ne "\e[4 q"					# '\e[4 q' sets cursor to _
-	elif [[ "${KEYMAP}" == "main" ]]; then  # main keymap is viins (INSERT mode)
-		echo -ne "\e[6 q"					# '\e[6 q' sets cursor to |
-	fi
+    if [[ "${TERM}" == "linux" ]]; then
+        if [[ "${KEYMAP}" == "vicmd" ]]; then
+            echo -ne "\e[?2c"                    # '\e[?2c' sets cursor to _
+        elif [[ "${KEYMAP}" == "main" ]]; then  # main keymap is viins (INSERT mode)
+            echo -ne "\e[?6c"                    # '\e[?6c' sets cursor to block
+        fi
+        return
+    fi
+
+    if [[ "${KEYMAP}" == "vicmd" ]]; then
+        echo -ne "\e[4 q"                    # '\e[4 q' sets cursor to _
+    elif [[ "${KEYMAP}" == "main" ]]; then  # main keymap is viins (INSERT mode)
+        echo -ne "\e[6 q"                    # '\e[6 q' sets cursor to |
+    fi
 }
+
 zle -N zle-keymap-select
 zle -N zle-line-init
+
+autoload -Uz compinit
+compinit
