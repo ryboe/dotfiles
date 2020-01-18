@@ -1,5 +1,5 @@
 [core]
-	editor = subl -w
+	editor = code --wait
 	excludesfile = ~/.config/git/ignore
 	whitespace = blank-at-eof,blank-at-eol,space-before-tab,trailing-space
 
@@ -23,6 +23,7 @@
 	ff = only
 
 [push]
+	default = current
 	showUntrackedFiles = all
 
 [transfer]

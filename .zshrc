@@ -1,18 +1,26 @@
 # ZSH OPTIONS
 setopt extended_glob
+setopt hist_find_no_dups
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
 setopt prompt_subst
+setopt share_history
 
 # KEY BINDINGS
 bindkey -v
 
 # ENV VARS
-export FZF_ALT_C_COMMAND="fd --type directory --hidden '.' ${HOME} /etc /usr /tmp /var /Applications"
-export FZF_CTRL_T_COMMAND="fd --type file --hidden --exclude .git '.' ${HOME} /etc /usr /tmp /var /Applications /sbin"
+export EDITOR='code'
+export FZF_ALT_C_COMMAND="fd --type directory --hidden '.' $HOME /etc /usr /tmp /var /Applications"
+export FZF_CTRL_T_COMMAND="fd --type file --hidden --exclude .git '.' $HOME /etc /usr /tmp /var /Applications /sbin"
+export GOBIN="$HOME/bin"
+export HISTFILE="$HOME/.zhistory"
+export HISTSIZE=5000
+export PATH="$HOME/bin:$HOME/.cargo/bin:$HOME/Library/Python/3.7/bin:$PATH"
 export PROMPT='%F{cyan}%B%40<..<%3~%b%f$(gitprompt) '
 export RPROMPT="%?"
 export RUSTFLAGS='--codegen target-cpu=native'
-export PATH="$HOME/bin:$HOME/.cargo/bin:$HOME/Library/Python/3.7/bin:$PATH"
-export GOBIN="$HOME/bin"
+export SAVEHIST="$HISTSIZE"
 
 # ALIASES
 alias ls="exa --color=auto --group-directories-first"
