@@ -1,5 +1,6 @@
 {
     "breadcrumbs.enabled": true,
+    "debug.allowBreakpointsEverywhere": true,
     "debug.inlineValues": true,
     "diffEditor.renderSideBySide": false,
     "editor.acceptSuggestionOnEnter": "off", // return is for adding newlines only (not for accepting completions)
@@ -29,22 +30,23 @@
     "go.useLanguageServer": true,
     "[go]": {
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": true,
         },
-        "editor.codeActionsOnSaveTimeout": 3000,
         "editor.formatOnSave": true,
         "editor.snippetSuggestions": "none"
     },
+    "[sql]": {
+        "editor.formatOnSave": false,
+        "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
+    },
     "gopls": {
-        "completeUnimported": true, // autocomplete unimported packages
-        "deepCompletion": true, // enable deep completion
+        "staticcheck": true, // enable live staticcheck errors (significantly increases memory usage)
         "usePlaceholders": true // add parameter placeholders when completing a function
     },
     "html.format.endWithNewline": true,
     "lldb.adapterType": "native",
     "rust-client.updateOnStartup": true,
-    "rust.clippy_preference": "on",
-    "search.location": "panel", // global search in the bottom panel, not the sidebar
+    "rust.clippy_preference": "on", // global search in the bottom panel, not the sidebar
     "search.showLineNumbers": true,
     "terminal.external.osxExec": "iTerm.app",
     "terminal.integrated.cursorBlinking": true,
@@ -56,8 +58,26 @@
     "workbench.editor.closeEmptyGroups": false, // don't auto-close empty panes when working with split editors
     "workbench.editor.enablePreviewFromQuickOpen": false,
     "workbench.startupEditor": "none", // don't show welcome page
-    "workbench.statusBar.feedback.visible": false, // disable user feedback smiley face in bottom right
-    "window.zoomLevel": 0,
+    "workbench.statusBar.feedback.visible": false,
     "explorer.confirmDelete": false,
-    "yaml.format.singleQuote": true
+    "yaml.format.singleQuote": true,
+    "rust.all_features": true,
+    "rust.wait_to_build": 1000,
+    "workbench.colorTheme": "Monokai",
+    "pgsql.format.keywordCasing": "lowercase",
+    "pgsql.format.datatypeCasing": "lowercase",
+    "pgsql.format.alignColumnDefinitionsInColumns": true,
+    "pgsql.format.placeSelectStatementReferencesOnNewLine": true,
+    "pgsql.intelliSense.lowerCaseSuggestions": true,
+    "extensions.ignoreRecommendations": false,
+    "terraform.indexing": {
+        "enabled": false // we can use the language server or indexing, but not both
+    },
+    "terraform.languageServer": {
+        "enabled": true
+    },
+    "terraform.lintConfig": "terraform/.tflint.hcl",
+    "[dockerfile]": {
+        "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+    }
 }

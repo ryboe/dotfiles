@@ -7,17 +7,17 @@ sudo softwareupdate -ia
 
 # create new SSH key
 if [[ ! -f ~/.ssh/id_ed25519 ]]; then
-	ssh-keygen -t ed25519
-	ssh-add -K ~/.ssh/id_ed25519
+    ssh-keygen -t ed25519
+    ssh-add -K ~/.ssh/id_ed25519
 fi
 
 # install brew
 if [[ ! -x "$(command -v brew)" ]]; then
-	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 # install brewed utils
-brew install bash curl exa fd fzf go git git-lfs htop jq python ripgrep shellcheck shfmt tree zsh
+brew bundle install
 
 # load shell config
 curl --retry 3 --retry-delay 0 --retry-max-time 30 -sL https://raw.githubusercontent.com/y0ssar1an/dotfiles/master/.zshrc >"$HOME/.zshrc"
@@ -27,8 +27,8 @@ source ~/.zshrc
 
 # install rust
 if [[ ! -x "$(command -v rustup)" ]]; then
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-	rustup toolchain install stable
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    rustup toolchain install stable
 fi
 
 # fetch configs from y0ssar1an/dotfiles
@@ -38,7 +38,7 @@ curl --retry 3 --retry-delay 0 --retry-max-time 30 --create-dirs -sL https://raw
 curl --retry 3 --retry-delay 0 --retry-max-time 30 -sL https://raw.githubusercontent.com/y0ssar1an/dotfiles/master/.CFUserTextEncoding >"$HOME/.CFUserTextEncoding"
 
 # install CLI utils
-mkdir ~/{bin,rs}
+mkdir ~/rs
 cargo install --git https://github.com/y0ssar1an/gitprompt
 cargo install --git https://github.com/y0ssar1an/update-shell-utils
 
