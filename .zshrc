@@ -13,21 +13,26 @@ bindkey -v
 export EDITOR='code'
 export FZF_ALT_C_COMMAND="fd --type directory --hidden '.' $HOME /etc /usr /tmp /var /Applications"
 export FZF_CTRL_T_COMMAND="fd --type file --hidden --exclude .git '.' $HOME /etc /usr /tmp /var /Applications /sbin"
-export GOBIN="$HOME/bin"
 export HISTFILE="$HOME/.zhistory"
 export HISTSIZE=5000
-export PATH="$HOME/bin:$HOME/.cargo/bin:$HOME/Library/Python/3.7/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$HOME/go/bin:$PATH"
 export PROMPT='%F{cyan}%B%40<..<%3~%b%f$(gitprompt) '
 export RPROMPT="%?"
 export RUSTFLAGS='--codegen target-cpu=native'
 export SAVEHIST="$HISTSIZE"
 
 # ALIASES
+alias cat="bat"
 alias ls="exa --color=auto --group-directories-first"
+alias python="python3"
 
 # SOURCES
 source "/usr/local/opt/fzf/shell/completion.zsh"
 source "/usr/local/opt/fzf/shell/key-bindings.zsh"
+
+# PYENV
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
 # FUNCTIONS
 qq() {
