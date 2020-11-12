@@ -1,37 +1,40 @@
 [core]
-	editor = code --wait
-	excludesfile = ~/.config/git/ignore
-	whitespace = blank-at-eof,blank-at-eol,space-before-tab,trailing-space
+editor = code --wait
+excludesfile = ~/.config/git/ignore
+whitespace = blank-at-eof,blank-at-eol,space-before-tab,trailing-space
 
 [alias]
-	branch-author = for-each-ref --format='$(committerdate) %09 $(authorname) %09 $(refname)'
-	co = checkout
-	fetchall = fetch --all --prune --tags
-	prom = pull --rebase origin master
-	pushf = push --force-with-lease
+branch-author = for-each-ref --format='$(committerdate) %09 $(authorname) %09 $(refname)'
+co = checkout
+fetchall = fetch --all --prune --tags
+prom = pull --rebase origin master
+pushf = push --force-with-lease
+
+[blame]
+ignoreRevsFile = .git-blame-ignore-revs
 
 [branch]
-	autosetuprebase = always
+autosetuprebase = always
 
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+clean = git-lfs clean -- %f
+smudge = git-lfs smudge -- %f
+process = git-lfs filter-process
+required = true
 
 [merged]
-	ff = only
+ff = only
 
 [push]
-	default = current
-	showUntrackedFiles = all
+default = current
+showUntrackedFiles = all
 
 [transfer]
-	fsckobjects = true
+fsckobjects = true
 
 [user]
-	name = Ryan Boehning
-	email = ryanboehning@gmail.com
+name = Ryan Boehning
+email = 1250684+ryboe@users.noreply.github.com
 
 [web]
-	browser = firefox
+browser = safari

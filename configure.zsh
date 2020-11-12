@@ -1,5 +1,4 @@
 #!/bin/zsh
-
 set -euo pipefail
 
 # install MacOS software updates
@@ -7,13 +6,13 @@ sudo softwareupdate -ia
 
 # create new SSH key
 if [[ ! -f ~/.ssh/id_ed25519 ]]; then
-    ssh-keygen -t ed25519
-    ssh-add -K ~/.ssh/id_ed25519
+  ssh-keygen -t ed25519
+  ssh-add -K ~/.ssh/id_ed25519
 fi
 
 # install brew
 if [[ ! -x "$(command -v brew)" ]]; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 # install brewed utils
@@ -26,10 +25,7 @@ curl --retry 3 --retry-delay 0 --retry-max-time 30 -sL https://raw.githubusercon
 source ~/.zshrc
 
 # install rust
-if [[ ! -x "$(command -v rustup)" ]]; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    rustup toolchain install stable
-fi
+rustup toolchain install stable
 
 # fetch configs from y0ssar1an/dotfiles
 curl --retry 3 --retry-delay 0 --retry-max-time 30 --create-dirs -sL https://raw.githubusercontent.com/y0ssar1an/dotfiles/master/.config/git/config >"$HOME/.config/git/config"
@@ -45,13 +41,17 @@ cargo install --git https://github.com/y0ssar1an/update-shell-utils
 echo '
 now install these:
   appcleaner
+  bypass paywalls chrome
+  chrome
   code
-  etcher
-  firefox
+  discord
+  docker
+  folx
   IINA
   imageoptim
   iterm2
   rectangle
   the unarchiver
-  qbittorrent
+  transmission
+  zoom
 '
