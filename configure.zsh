@@ -6,7 +6,7 @@ softwareupdate -ia
 
 # install brew
 if ! command -v brew; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 # install brewed utils
@@ -15,11 +15,11 @@ brew bundle install
 
 # create new SSH key
 if [[ ! -f ~/.ssh/id_ed25519 ]]; then
-  echo "We'll need a password for the SSH key we're about to generate."
-  echo "Please install 1Password before continuing."
-  vared -p 'Press [return] when your SSH key password is generated in 1Password: '
-  ssh-keygen -t ed25519
-  ssh-add -K ~/.ssh/id_ed25519
+	echo "We'll need a password for the SSH key we're about to generate."
+	echo "Please install 1Password before continuing."
+	vared -p 'Press [return] when your SSH key password is generated in 1Password: '
+	ssh-keygen -t ed25519
+	ssh-add -K ~/.ssh/id_ed25519
 fi
 
 # load shell config
@@ -31,7 +31,7 @@ source ~/.zshrc
 
 # install rust
 if ! command -v rustup; then
-  rustup-init
+	rustup-init
 fi
 rustup toolchain install stable
 
