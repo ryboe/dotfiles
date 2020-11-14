@@ -25,6 +25,9 @@ required = true
 [merged]
 ff = only
 
+[pull]
+ff = only
+
 [push]
 default = current
 showUntrackedFiles = all
