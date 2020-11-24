@@ -36,5 +36,3 @@ brew 'tokei'
 brew 'tree'
 brew 'zenith'
 brew 'zsh'
-
-cask 'google-cloud-sdk'
