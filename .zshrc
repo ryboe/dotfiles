@@ -1,8 +1,11 @@
 # ZSH OPTIONS
+setopt append_history
 setopt extended_glob
 setopt hist_find_no_dups
-setopt hist_ignore_all_dups
+setopt hist_ignore_dups
 setopt hist_ignore_space
+setopt hist_reduce_blanks
+setopt hist_save_no_dups
 setopt prompt_subst
 setopt share_history
 
@@ -11,10 +14,9 @@ bindkey -v
 
 # ENV VARS
 export EDITOR='code'
-export FZF_ALT_C_COMMAND="fd --type directory --hidden '.' $HOME /etc /usr /tmp /var /Applications"
-export FZF_CTRL_T_COMMAND="fd --type file --hidden --exclude .git '.' $HOME /etc /usr /tmp /var /Applications /sbin"
-export HISTFILE="$HOME/.zhistory"
-export HISTSIZE=5000
+export FZF_ALT_C_COMMAND=" fd --type d --hidden . $HOME /usr /etc"
+export FZF_CTRL_T_COMMAND="fd --type f --hidden . $HOME /usr /etc"
+export HISTSIZE='10000'
 export PATH="$HOME/.cargo/bin:$HOME/go/bin:$PATH"
 export PROMPT='%F{cyan}%B%40<..<%3~%b%f$(gitprompt) '
 export RPROMPT="%?"
@@ -30,56 +32,25 @@ alias python="python3"
 source "/usr/local/opt/fzf/shell/completion.zsh"
 source "/usr/local/opt/fzf/shell/key-bindings.zsh"
 
-# PYENV
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+# EVALS
+# eval "$(pyenv init -)"
+# eval "$(pyenv virtualenv-init -)"
 
 # FUNCTIONS
-qq() {
-    clear
-
-    logpath="$TMPDIR/q"
-    if [[ -z "$TMPDIR" ]]; then
-        logpath="/tmp/q"
-    fi
-
-    if [[ ! -f "$logpath" ]]; then
-        echo 'Q LOG' > "$logpath"
-    fi
-
-    tail -100f -- "$logpath"
-}
-
-rmqq() {
-    logpath="$TMPDIR/q"
-    if [[ -z "$TMPDIR" ]]; then
-        logpath="/tmp/q"
-    fi
-    if [[ -f "$logpath" ]]; then
-        rm "$logpath"
-    fi
-    qq
-}
-
-zle-keymap-select zle-line-init() {
-    if [[ "${TERM}" == "linux" ]]; then
-        if [[ "${KEYMAP}" == "vicmd" ]]; then
-            echo -ne "\e[?2c"                    # '\e[?2c' sets cursor to _
-        elif [[ "${KEYMAP}" == "main" ]]; then  # main keymap is viins (INSERT mode)
-            echo -ne "\e[?6c"                    # '\e[?6c' sets cursor to block
-        fi
-        return
-    fi
-
-    if [[ "${KEYMAP}" == "vicmd" ]]; then
-        echo -ne "\e[4 q"                    # '\e[4 q' sets cursor to _
-    elif [[ "${KEYMAP}" == "main" ]]; then  # main keymap is viins (INSERT mode)
-        echo -ne "\e[6 q"                    # '\e[6 q' sets cursor to |
-    fi
+zle-keymap-select() {
+	if [[ ${KEYMAP} == "vicmd" ]]; then
+		echo -ne "\e[3 q"                # set cursor to blinking _
+	elif [[ ${KEYMAP} == "main" ]]; then # main keymap is viins (INSERT mode)
+		echo -ne "\e[5 q"                # set cursor to blinking |
+	fi
 }
 
 zle -N zle-keymap-select
-zle -N zle-line-init
 
+# ENABLE COMPLETIONS
 autoload -Uz compinit
-compinit
+if [[ -n $HOME/.zcompdump(#qN.mh+24) ]]; then
+	compinit
+else
+	compinit -C # avoid recompiling .zcompdump
+fi
