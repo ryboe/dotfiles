@@ -1,5 +1,10 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 set -euo pipefail
+
+# Install command line tools
+if ! command -v clang; then
+	xcode-select --install
+fi
 
 # Install MacOS software updates
 softwareupdate -iar
@@ -13,21 +18,29 @@ fi
 rm -f Brewfile.lock.json
 brew bundle install
 
+# Enable docker completions
+ln -sf /Applications/Docker.app/Contents/Resources/etc/docker.zsh-completion /usr/local/share/zsh/site-functions/_docker
+ln -sf /Applications/Docker.app/Contents/Resources/etc/docker-compose.zsh-completion /usr/local/share/zsh/site-functions/_docker-compose
+
 # Create new SSH key
 if [[ ! -f ~/.ssh/id_ed25519 ]]; then
-	echo "We'll need a password for the SSH key we're about to generate."
-	echo "Please install 1Password before continuing."
-	vared -p 'Press [return] when your SSH key password is generated in 1Password: '
-	ssh-keygen -t ed25519
+	op update
+	eval "$(op signin boehning ryanboehning@gmail.com)"
+	MACBOOK_MODEL="$(system_profiler -json SPHardwareDataType | jq -r '.SPHardwareDataType[0].machine_model')"
+	SSH_KEY_UUID="$(op create item login --vault=Private --generate-password=letters,digits,20 title="$MACBOOK_MODEL SSH Key" | jq -r '.uuid')"
+	SSH_KEY_PASSWORD=$(op get item "$SSH_KEY_UUID" | jq -r '.details.fields[] | select(.designation == "password").value')
+	ssh-keygen -t ed25519 -N "$SSH_KEY_PASSWORD"
 	ssh-add -K ~/.ssh/id_ed25519
 fi
 
-# Load shell config
-curl -sSL --retry 3 --max-time 10 --output ~/.zshrc https://raw.githubusercontent.com/ryboe/dotfiles/master/.zshrc
+# Clone all the dotfiles
+rm -rf /tmp/dotfiles
+git clone https://github.com/ryboe/dotfiles.git /tmp
 
-# Reduce permissions on zsh dirs to avoid warning from compaudit
-chmod go-w /usr/local/share/zsh /usr/local/share/zsh/site-functions
-source ~/.zshrc
+# Fetch configs from ryboe/dotfiles
+cp -R /tmp/.config "$HOME"
+cp /tmp/.ssh/config ~/.ssh/config
+cp /tmp/.CFUserTextEncoding ~/.CFUserTextEncoding
 
 # Install rust.
 if ! command -v rustup; then
@@ -35,43 +48,22 @@ if ! command -v rustup; then
 fi
 rustup toolchain install stable
 
-# Fetch configs from ryboe/dotfiles
-curl -ssL --retry 3 --max-time 10 --create-dirs --output ~/.config/git/config https://raw.githubusercontent.com/ryboe/dotfiles/master/.config/git/config
-curl -sSL --retry 3 --max-time 10 --output ~/.config/git/ignore https://raw.githubusercontent.com/ryboe/dotfiles/master/.config/git/ignore
-curl -sSL --retry 3 --max-time 10 --create-dirs --output ~/.ssh/config https://raw.githubusercontent.com/ryboe/dotfiles/master/.ssh/config
-rm -f ~/.CFUserTextEncoding
-curl -sSL --retry 3 --max-time 10 --output ~/.CFUserTextEncoding https://raw.githubusercontent.com/ryboe/dotfiles/master/.CFUserTextEncoding
-
 # Install homemade CLI utils
-mkdir -p ~/{go,py,rs}
-cargo install --git https://github.com/ryboe/gitprompt
-cargo install --git https://github.com/ryboe/update-shell-utils
+mkdir -p ~/{go,rs}
+export RUSTFLAGS='--codegen target-cpu=native'
+cargo install --git https://github.com/ryboe/gitprompt.git
+cargo install --git https://github.com/ryboe/update-shell-utils.git
+
+# Reduce permissions on zsh dirs to avoid warning from compaudit
+chmod go-w /usr/local/share/zsh /usr/local/share/zsh/site-functions
+
+# Load shell config
+cp /tmp/.zshrc ~/.zshrc
+source ~/.zshrc
 
 # Download bypass-paywalls-chrome. This will not install it.
 rm -rf ~/Applications/bypass-paywalls-chrome-master
 curl -sSL --retry 3 --max-time 30 https://github.com/iamadamdev/bypass-paywalls-chrome/archive/master.zip | tar -xzf - -C ~/Applications/
 
-# Enable docker completions. These symlinks will be broken until docker is installed.
-ln -sf /Applications/Docker.app/Contents/Resources/etc/docker.zsh-completion /usr/local/share/zsh/site-functions/_docker
-ln -sf /Applications/Docker.app/Contents/Resources/etc/docker-compose.zsh-completion /usr/local/share/zsh/site-functions/_docker-compose
-
-echo '
-now install these:
-  1password
-  adguard
-  amphetamine
-  appcleaner
-  bypass-paywalls-chrome
-  chrome
-  code
-  discord
-  docker
-  dropbox
-  folx
-  IINA
-  imageoptim
-  iterm2
-  rectangle
-  the unarchiver
-  zoom
-'
+# Download Chrome installer. There is no brew cask for Chrome.
+curl --progress --retry 3 --max-time 180 -LO https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg
