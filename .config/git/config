@@ -1,11 +1,10 @@
 [core]
 editor = code --wait
-excludesfile = ~/.config/git/ignore
 
 [alias]
 can = commit --amend --no-edit
 fetchall = fetch --all --prune --tags
-prom = pull --rebase origin master
+prom = pull --rebase origin main
 pushf = push --force-with-lease
 
 [blame]
@@ -13,6 +12,9 @@ ignoreRevsFile = .git-blame-ignore-revs
 
 [branch]
 autosetuprebase = always
+
+[credential]
+helper = osxkeychain
 
 [filter "lfs"]
 clean = git-lfs clean -- %f
@@ -41,4 +43,4 @@ name = Ryan Boehning
 email = 1250684+ryboe@users.noreply.github.com
 
 [web]
-browser = chrome
+browser = safari
