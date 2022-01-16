@@ -15,12 +15,10 @@ if ! command -v brew; then
 fi
 
 # Install brewed utils
-rm -f Brewfile.lock.json
-brew bundle install
+brew bundle install --no-lock
 
 # Enable docker completions
-ln -sf /Applications/Docker.app/Contents/Resources/etc/docker.zsh-completion /usr/local/share/zsh/site-functions/_docker
-ln -sf /Applications/Docker.app/Contents/Resources/etc/docker-compose.zsh-completion /usr/local/share/zsh/site-functions/_docker-compose
+ln -sf /Applications/Docker.app/Contents/Resources/etc/docker.zsh-completion /opt/homebrew/share/zsh/site-functions/_docker
 
 # Create new SSH key
 if [[ ! -f ~/.ssh/id_ed25519 ]]; then
@@ -52,10 +50,9 @@ rustup toolchain install stable
 mkdir -p ~/{go,rs}
 export RUSTFLAGS='--codegen target-cpu=native'
 cargo install --git https://github.com/ryboe/gitprompt.git
-cargo install --git https://github.com/ryboe/update-shell-utils.git
 
 # Reduce permissions on zsh dirs to avoid warning from compaudit
-chmod go-w /usr/local/share/zsh /usr/local/share/zsh/site-functions
+chmod go-w /opt/homebrew/share/zsh /opt/homebrew/share/zsh/site-functions
 
 # Load shell config
 cp /tmp/.zshrc ~/.zshrc
@@ -66,4 +63,4 @@ rm -rf ~/Applications/bypass-paywalls-chrome-master
 curl -sSL --retry 3 --max-time 30 https://github.com/iamadamdev/bypass-paywalls-chrome/archive/master.zip | tar -xzf - -C ~/Applications/
 
 # Download Chrome installer. There is no brew cask for Chrome.
-curl --progress --retry 3 --max-time 180 -LO https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg
+curl -ssL --retry 3 --max-time 180 --progress -O https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg

@@ -3,6 +3,7 @@ setopt append_history       # each session will append to ~/.zsh_history instead
 setopt extended_glob        # enable inverse globs and other glob tricks, e.g ls [^foo]bar
 setopt hist_find_no_dups    # don't display dups if you find them in .zsh_history during a ctrl+r search
 setopt hist_ignore_all_dups # remove older command if it's a dup of the most recent command
+setopt hist_ignore_space    # don't put command in history if leading space
 setopt hist_reduce_blanks   # trim unnecessary whitespace
 setopt hist_save_no_dups    # remove dups on save
 setopt prompt_subst         # enable $(gitprompt) in prompt string (see $PROMPT)
@@ -17,8 +18,8 @@ export FZF_ALT_C_COMMAND=" fd --type d --hidden . $HOME /usr /etc"
 export FZF_CTRL_T_COMMAND="fd --type f --hidden . $HOME /usr /etc"
 export HISTSIZE='10000'
 export PATH="$HOME/.cargo/bin:$HOME/go/bin:$PATH"
-export PROMPT='%F{cyan}%B%40<..<%3~%b%f$(gitprompt) '
-export RPROMPT="%?"
+export PROMPT='%F{cyan}${PWD/#$HOME/~}%f %F{yellow}$(gitprompt)%f '
+export RPROMPT='%?'
 export RUSTFLAGS='--codegen target-cpu=native'
 export SAVEHIST="$HISTSIZE"
 
@@ -27,8 +28,8 @@ alias cat='bat'
 alias ls='exa --color=auto --group-directories-first'
 
 # SOURCES
-source "/usr/local/opt/fzf/shell/completion.zsh"
-source "/usr/local/opt/fzf/shell/key-bindings.zsh"
+source "/opt/homebrew/opt/fzf/shell/completion.zsh"
+source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
 source "$HOME/.iterm2_shell_integration.zsh"
 
 # FUNCTIONS
