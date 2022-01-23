@@ -58,6 +58,10 @@ chmod go-w /opt/homebrew/share/zsh /opt/homebrew/share/zsh/site-functions
 cp /tmp/.zshrc ~/.zshrc
 source ~/.zshrc
 
+# JPEG screenshots
+defaults write com.apple.screencapture type jpg
+killall SystemUIServer
+
 # Download bypass-paywalls-chrome. This will not install it.
 rm -rf ~/Applications/bypass-paywalls-chrome-master
 curl -sSL --retry 3 --max-time 30 https://github.com/iamadamdev/bypass-paywalls-chrome/archive/master.zip | tar -xzf - -C ~/Applications/
