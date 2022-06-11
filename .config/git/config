@@ -7,9 +7,6 @@ fetchall = fetch --all --prune --tags
 prom = pull --rebase origin main
 pushf = push --force-with-lease
 
-[blame]
-ignoreRevsFile = .git-blame-ignore-revs
-
 [branch]
 autosetuprebase = always
 
