@@ -35,13 +35,12 @@ source "$HOME/.iterm2_shell_integration.zsh"
 
 # FUNCTIONS
 seedboxls() {
-	local dir="$1"
-	ssh seedbox -- ls "Downloads/$dir"
+	ssh seedbox -- ls "Downloads/$1"
 }
 
 seedboxdl() {
 	if [[ -z $SEEDBOX_USERNAME ]]; then
-		export SEEDBOX_USERNAME=$(op item get Seedbox --format=json | jq -r '.fields[] | select(.id == "username").value')
+		export SEEDBOX_USERNAME=$(op read op://Private/Seedbox/username)
 	fi
 
 	local filepath="$1"

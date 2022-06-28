@@ -57,7 +57,7 @@ log_in_to_1password() {
 
 github_cli_login() {
 	if ! gh auth status; then
-		local GITHUB_PAT=$(op item get GitHub --fields=commandline.personalaccesstoken)
+		local GITHUB_PAT=$(op read op://Private/GitHub/commandline/personalaccesstoken)
 		echo $GITHUB_PAT | gh auth login --git-protocol=https --with-token
 	fi
 }
@@ -102,9 +102,8 @@ fetch_dotfiles() {
 
 add_seedbox_to_ssh_config() {
 	if ! rg --fixed-strings 'Host seedbox' ~/.ssh/config; then
-		local SEEDBOX_JSON=$(op item get Seedbox --format=json)
-		local SEEDBOX_HOST=$(echo $SEEDBOX_JSON | jq -r '.urls[] | select(.primary == true).href')
-		local SEEDBOX_USERNAME=$(echo $SEEDBOX_JSON | jq -r '.fields[] | select(.id == "username").value')
+		local SEEDBOX_HOST=$(op read op://Private/Seedbox/url)
+		local SEEDBOX_USERNAME=$(op read op://Private/Seedbox/username)
 		echo '' >>~/.ssh/config
 		echo 'Host seedbox' >>~/.ssh/config
 		echo "	HostName $SEEDBOX_HOST" >>~/.ssh/config
