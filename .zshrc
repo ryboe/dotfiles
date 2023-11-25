@@ -9,29 +9,27 @@ setopt hist_save_no_dups    # remove dups on save
 setopt prompt_subst         # enable $(gitprompt) in prompt string (see $PROMPT)
 setopt share_history        # all zsh sessions share ~/.zsh_history. makes ctrl+r searches better
 
-# KEY BINDINGS
-bindkey -v # use vim commands in the line editor
-
 # ENV VARS
 export EDITOR='code'
-export FZF_ALT_C_COMMAND=" fd --type d --hidden . $HOME /usr /etc"
-export FZF_CTRL_T_COMMAND="fd --type f --hidden . $HOME /usr /etc"
+export FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
+export GOEXPERIMENT='loopvar'
 export HISTSIZE='10000'
-export PATH="$HOME/.cargo/bin:$HOME/go/bin:$PATH"
-export PROMPT='%F{cyan}${PWD/#$HOME/~}%f %F{yellow}$(gitprompt)%f '
-export RPROMPT='%?'
+export PATH="$HOME/.cargo/bin:$HOME/go/bin:$HOME/.docker/bin:$PATH"
 export RUSTFLAGS='--codegen target-cpu=native'
 export SAVEHIST="$HISTSIZE"
+export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# SECRETS
+export BC_API_KEY='op://Private/Bridgecrew/add more/API Key'
 
 # ALIASES
-alias brewup='brew update; brew upgrade; brew cleanup --prune=all'
 alias cat='bat'
-alias ls='exa --color=auto --group-directories-first'
+alias checkov='op run -- checkov'
+alias ls='eza --color=auto --group-directories-first'
 
 # SOURCES
-source "/opt/homebrew/opt/fzf/shell/completion.zsh"
-source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
-source "$HOME/.iterm2_shell_integration.zsh"
+source "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc"
+source "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc"
 
 # FUNCTIONS
 seedboxls() {
@@ -53,6 +51,15 @@ seedboxdl() {
 	# --protect-args    don't let remote shell interpret string (will split on spaces)
 	# --progress        show a progress bar
 	rsync --verbose --human-readable --protect-args --progress "seedbox:/home/${SEEDBOX_USERNAME}/Downloads/${filepath}" "$HOME/Downloads"
+}
+
+up() {
+	brew update
+	brew upgrade --greedy
+	pip3 list --outdated --format=json | jq -r '.[].name' | xargs -I {} pip3 install --upgrade {}
+	if docker info &>/dev/null; then
+		docker image pull moby/buildkit:buildx-stable-1
+	fi
 }
 
 zle-keymap-select() {

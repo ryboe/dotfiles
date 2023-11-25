@@ -135,11 +135,6 @@ make_code_dir() {
 	mkdir -p ~/code
 }
 
-install_gitprompt() {
-	export RUSTFLAGS='--codegen target-cpu=native'
-	cargo install --git=https://github.com/ryboe/gitprompt.git
-}
-
 set_screenshots_to_jpg() {
 	# Save screenshots in ~/Downloads instead of ~/Desktop
 	defaults write com.apple.screencapture location "$HOME/Screenshots"
