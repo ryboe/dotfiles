@@ -4,11 +4,14 @@ editor = code --wait
 [alias]
 can = commit --amend --no-edit
 fetchall = fetch --all --prune --tags
-prom = pull --rebase origin main
+pro = pull --rebase origin
 pushf = push --force-with-lease
 
 [branch]
 autosetuprebase = always
+
+[commit]
+gpgsign = true
 
 [credential]
 helper = osxkeychain
@@ -19,6 +22,13 @@ smudge = git-lfs smudge -- %f
 process = git-lfs filter-process
 required = true
 
+[gpg]
+format = ssh
+signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOl0UCDEsdhc+EWXEzmA0Vy2M1rreOLFZHqKQnBRMO7 1250684+ryboe@users.noreply.github.com
+
+[gpg "ssh"]
+program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+
 [init]
 defaultBranch = main
 
@@ -26,11 +36,16 @@ defaultBranch = main
 ff = only
 
 [pull]
+autoSetupRemote = true
 ff = only
 
 [push]
+autoSetupRemote = true
 default = current
 showUntrackedFiles = all
+
+[rebase]
+updateRefs = true
 
 [transfer]
 fsckobjects = true
@@ -38,6 +53,7 @@ fsckobjects = true
 [user]
 name = Ryan Boehning
 email = 1250684+ryboe@users.noreply.github.com
+signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOl0UCDEsdhc+EWXEzmA0Vy2M1rreOLFZHqKQnBRMO7
 
 [web]
 browser = safari
