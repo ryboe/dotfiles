@@ -57,7 +57,7 @@ updateRefs = true
 [receive]
 fsckObjects = true
 
-[remote "*"]
+[remote "origin"]
 tagOpt = --tags
 
 [transfer]
