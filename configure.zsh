@@ -100,17 +100,6 @@ fetch_dotfiles() {
 	fi
 }
 
-add_seedbox_to_ssh_config() {
-	if ! rg --fixed-strings 'Host seedbox' ~/.ssh/config; then
-		local SEEDBOX_HOST=$(op read op://Private/Seedbox/url)
-		local SEEDBOX_USERNAME=$(op read op://Private/Seedbox/username)
-		echo '' >>~/.ssh/config
-		echo 'Host seedbox' >>~/.ssh/config
-		echo "	HostName $SEEDBOX_HOST" >>~/.ssh/config
-		echo "	User $SEEDBOX_USERNAME" >>~/.ssh/config
-	fi
-}
-
 install_rust() {
 	if ! command -v rustup; then
 		rustup-init
@@ -149,12 +138,6 @@ set_screenshots_to_jpg() {
 download_chrome_installer() {
 	# There is no brew cask for Chrome.
 	curl -ssL --retry 3 --max-time 180 --progress -O https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg
-}
-
-download_bypass_paywalls_chrome() {
-	# This will download and extract it, not install it.
-	rm -rf ~/Applications/bypass-paywalls-chrome-master
-	curl -sSL --retry 3 --max-time 30 https://github.com/iamadamdev/bypass-paywalls-chrome/archive/master.zip | tar -xzf - -C ~/Applications/
 }
 
 main() {

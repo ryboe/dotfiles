@@ -16,6 +16,13 @@ gpgsign = true
 [credential]
 helper = osxkeychain
 
+[diff]
+algorithm = histogram
+
+[fetch]
+fsckObjects = true
+prune = true
+
 [filter "lfs"]
 clean = git-lfs clean -- %f
 smudge = git-lfs smudge -- %f
@@ -33,6 +40,7 @@ program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
 defaultBranch = main
 
 [merged]
+conflictStyle = zdiff3
 ff = only
 
 [pull]
@@ -40,12 +48,17 @@ autoSetupRemote = true
 ff = only
 
 [push]
-autoSetupRemote = true
 default = current
 showUntrackedFiles = all
 
 [rebase]
 updateRefs = true
+
+[receive]
+fsckObjects = true
+
+[remote "*"]
+tagOpt = --tags
 
 [transfer]
 fsckobjects = true

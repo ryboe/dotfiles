@@ -9,18 +9,25 @@ setopt hist_save_no_dups    # remove dups on save
 setopt prompt_subst         # enable $(gitprompt) in prompt string (see $PROMPT)
 setopt share_history        # all zsh sessions share ~/.zsh_history. makes ctrl+r searches better
 
+# HOMEBREW
+export HOMEBREW_PREFIX="/opt/homebrew"
+export HOMEBREW_CELLAR="${HOMEBREW_PREFIX}/Cellar"
+export HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}"
+export INFOPATH="${HOMEBREW_PREFIX}/share/info:${INFOPATH:-}"
+export MANPATH="${HOMEBREW_PREFIX}/share/man${MANPATH+:$MANPATH}:"
+
 # ENV VARS
+export BUILDX_GIT_LABELS='full' # apply OCI labels to images built with buildx
 export EDITOR='code'
-export FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
-export GOEXPERIMENT='loopvar'
-export HISTSIZE='10000'
-export PATH="$HOME/.cargo/bin:$HOME/go/bin:$HOME/.docker/bin:$PATH"
+export FPATH="${HOMEBREW_PREFIX}/share/zsh/site-functions:${FPATH}"
+export HISTSIZE='50000'
+export PATH="${HOME}/.cargo/bin:${HOME}/go/bin:${HOME}/.docker/bin:${HOME}/.local/bin:${HOMEBREW_PREFIX}/bin:${HOMEBREW_PREFIX}/sbin:${PATH}"
 export RUSTFLAGS='--codegen target-cpu=native'
-export SAVEHIST="$HISTSIZE"
-export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+export SAVEHIST="${HISTSIZE}"
+export SSH_AUTH_SOCK="${HOME}/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
 # SECRETS
-export BC_API_KEY='op://Private/Bridgecrew/add more/API Key'
+export BC_API_KEY='op://Private/Bridgecrew API Key/credential' # for checkov
 
 # ALIASES
 alias cat='bat'
@@ -32,34 +39,21 @@ source "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc"
 source "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc"
 
 # FUNCTIONS
-seedboxls() {
-	ssh seedbox -- ls "Downloads/$1"
-}
-
-seedboxdl() {
-	if [[ -z $SEEDBOX_USERNAME ]]; then
-		export SEEDBOX_USERNAME=$(op read op://Private/Seedbox/username)
-	fi
-
-	local filepath="$1"
-	if [[ -z $filepath ]]; then
-		echo "please pass the filepath of the file you want to download (relative to /home/${SEEDBOX_USERNAME}/Downloads)"
-		exit 1
-	fi
-
-	# --human-readable  numbers are human readable
-	# --protect-args    don't let remote shell interpret string (will split on spaces)
-	# --progress        show a progress bar
-	rsync --verbose --human-readable --protect-args --progress "seedbox:/home/${SEEDBOX_USERNAME}/Downloads/${filepath}" "$HOME/Downloads"
+digany() {
+	local domain=$1
+	for record_type in A AAAA CAA CERT CNAME DNAME MX NS PTR SOA SRV TXT; do
+		dig +noall +answer +multiline ${domain} ${record_type};
+	done
 }
 
 up() {
 	brew update
 	brew upgrade --greedy
-	pip3 list --outdated --format=json | jq -r '.[].name' | xargs -I {} pip3 install --upgrade {}
+	pip list --outdated --format=json | jq -r '.[].name' | xargs -I {} pip3 install --upgrade {}
 	if docker info &>/dev/null; then
 		docker image pull moby/buildkit:buildx-stable-1
 	fi
+	go install mvdan.cc/gofumpt@latest
 }
 
 zle-keymap-select() {
@@ -79,7 +73,7 @@ zle -N zle-line-init
 
 # ENABLE COMPLETIONS
 autoload -Uz compinit
-if [[ -n $HOME/.zcompdump(#qN.mh+24) ]]; then
+if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
 	compinit
 	compdump
 else
