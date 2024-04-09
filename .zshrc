@@ -1,12 +1,13 @@
-# ZSH OPTIONS
 setopt append_history       # each session will append to ~/.zsh_history instead of replacing it
 setopt extended_glob        # enable inverse globs and other glob tricks, e.g ls [^foo]bar
+setopt extended_history     # save timestamp with each command
 setopt hist_find_no_dups    # don't display dups if you find them in .zsh_history during a ctrl+r search
 setopt hist_ignore_all_dups # remove older command if it's a dup of the most recent command
 setopt hist_ignore_space    # don't record commands in history if they start with a space
 setopt hist_reduce_blanks   # trim unnecessary whitespace
 setopt hist_save_no_dups    # remove dups on save
-setopt prompt_subst         # enable $(gitprompt) in prompt string (see $PROMPT)
+setopt inc_append_history   # add commands to history as they are entered, not at shell exit
+setopt no_case_glob         # case insensitive globbing
 setopt share_history        # all zsh sessions share ~/.zsh_history. makes ctrl+r searches better
 
 # HOMEBREW
